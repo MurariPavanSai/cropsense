@@ -1,0 +1,81 @@
+Crop,Temp (°C),Rain (cm),Indian Soil Type,FAO/WRB Soil Type,Soil Moisture,RH (%)
+Rice,20–30,150–300,"Clay, Alluvial, Deltaic","Fluvisols, Gleysols",High,60–80
+Paddy,20–30,150–300,"Clay, Alluvial, Deltaic","Gleysols, Fluvisols",High,60–80
+Wheat,15–25,75–100,"Alluvial, Black Loam","Fluvisols, Luvisols",Moderate,50–60
+Maize (Corn),18–27,60–120,"Red, Sandy Loam","Luvisols, Cambisols",Moderate,50–70
+Jowar,20–32,30–100,"Red, Sandy, Black","Vertisols, Lixisols",Low–Medium,40–50
+Bajra,25–30,40–65,"Sandy, Red","Arenosols, Albeluvisols",Low,40–50
+Ragi,22–30,70–80,"Red, Laterite, Sandy Loam","Lixisols, Ferralsols",Moderate,50–60
+Barley,12–25,40–75,"Alluvial, Loam","Cambisols, Luvisols",Moderate,40–50
+Urad,20–30,60–75,"Red, Loam, Black","Luvisols, Vertisols",Moderate,50–65
+Moong,20–35,60–75,"Red, Sandy Loam",Luvisols,Moderate,50–65
+Tur,18–30,60–100,"Black, Red, Deep Loam","Vertisols, Lixisols",Moderate,50–70
+Gram,20–25,40–60,"Sandy, Clay Loam, Red","Luvisols, Cambisols",Moderate,40–60
+Field Pea,10–18,50–75,"Red, Sandy Loam","Luvisols, Cambisols",Moderate,50–60
+Horse Gram,20–30,40–80,"Red, Loam",Lixisols,Low–Mod,45–60
+Cowpea,20–35,40–100,"Red, Sandy Loam","Luvisols, Arenosols",Moderate,55–70
+Cluster Bean,25–35,25–40,Sandy Loam,Arenosols,Low,40–55
+Moth Bean,18–32,25–50,Sandy Loam,Arenosols,Low,40–55
+Groundnut,20–30,50–100,"Sandy Loam, Red","Arenosols, Luvisols",Moderate,50–70
+Castor,20–26,50–75,"Sandy Loam, Red","Arenosols, Luvisols",Moderate,50–60
+Sesame,25–35,50–100,"Sandy, Alluvial, Red","Arenosols, Fluvisols",Moderate,45–60
+Sunflower,20–25,50–100,"Alluvial, Sandy, Red","Luvisols, Arenosols",Moderate,50–60
+Soybean,20–30,60–80,"Black, Loam","Vertisols, Luvisols",Moderate,50–70
+Safflower,15–30,50–75,"Red, Loam, Black","Lixisols, Vertisols",Moderate,45–65
+Mustard,10–25,25–40,"Red, Loam, Alluvial","Luvisols, Cambisols",Low–Moderate,40–60
+Sugarcane,21–27,75–150,"Deep Loam, Alluvial","Fluvisols, Cambisols",High,70–80
+Cotton,21–30,50–100,"Black/Regur, Red","Vertisols, Lixisols",Moderate,50–60
+Linseed,10–25,50–80,"Red, Loam, Sandy","Luvisols, Cambisols",Moderate,40–60
+Tobacco,15–35,50–100,"Red, Sandy Loam","Arenosols, Luvisols",Moderate,50–60
+Tea,13–32,150–250,"Acid, Laterite, Red","Ferralsols, Acrisols",High,70–90
+Coffee,15–28,150–250,"Laterite, Red Loam","Ferralsols, Acrisols",High,70–80
+Rubber,21–35,200–300,"Laterite, Forest","Ferralsols, Acrisols",High,75–90
+Coconut,21–32,100–160,"Coastal Sandy/Alluvial","Arenosols, Fluvisols",Mod–High,70–90
+Betel Leaf,20–30,75–200,"Loam, Moist Forest","Acrisols, Cambisols",High,75–90
+Arecanut,20–30,100–200,"Well-drained, Loam","Cambisols, Acrisols",High,75–85
+Banana,21–35,100–200,"Deep, Sandy Loam","Arenosols, Cambisols",High,75–85
+Mango,24–30,75–250,"Red, Sandy, Loam","Luvisols, Cambisols",Moderate,60–80
+Papaya,22–35,100–150,"Well-drained, Sandy","Arenosols, Luvisols",Moderate,60–80
+Sapota,22–28,125–200,"Alluvial, Sandy Loam","Fluvisols, Arenosols",Moderate,70–80
+Jackfruit,25–32,100–200,"Sandy Loam, Laterite","Arenosols, Ferralsols",Moderate,65–80
+Custard Apple,22–38,50–80,"Sandy, Red, Laterite","Arenosols, Ferralsols",Moderate,50–75
+Guava,23–28,100–200,"Alluvial, Loam, Sandy","Fluvisols, Luvisols",Moderate,60–80
+Lemon,22–30,75–125,"Well-drained, Red","Luvisols, Arenosols",Moderate,60–80
+Pomegranate,25–35,50–60,"Light, Well-drained","Arenosols, Luvisols",Low–Moderate,40–60
+Orange,15–30,75–150,"Red, Sandy, Loam","Cambisols, Luvisols",Moderate,60–80
+Grapes,15–35,55–100,"Loamy, Sandy, Red","Cambisols, Luvisols",Moderate,55–70
+Watermelon,24–32,60–100,Sandy Loam,Arenosols,Moderate,60–75
+Muskmelon,23–30,50–85,Sandy Loam,Arenosols,Moderate,55–70
+Pineapple,15–24,150–250,"Sandy Loam, Laterite","Arenosols, Ferralsols",Moderate,75–90
+Litchi,23–35,100–200,"Sandy Loam, Alluvial","Arenosols, Fluvisols",Moderate,75–85
+Sweet Potato,21–27,70–120,Sandy Loam,Arenosols,Moderate,65–80
+Yam,25–30,100–150,"Sandy Loam, Red","Arenosols, Luvisols",Moderate,65–85
+Potato,15–20,50–150,"Sandy Loam, Alluvial","Arenosols, Cambisols",High,60–80
+Carrot,15–20,60–75,"Light Loam, Alluvial","Cambisols, Fluvisols",Moderate,60–80
+Onion,15–25,75–120,"Alluvial, Sandy","Fluvisols, Arenosols",Moderate,60–70
+Garlic,12–20,50–100,"Sandy, Alluvial","Arenosols, Fluvisols",Moderate,50–70
+Tomato,20–27,50–75,"Well-drained, Red","Luvisols, Arenosols",Moderate,60–70
+Brinjal,21–30,50–75,"Loamy, Red","Luvisols, Cambisols",Moderate,60–70
+Okra/Bhindi,20–30,50–75,"Loamy, Red","Luvisols, Arenosols",Moderate,60–70
+Pumpkin,22–30,50–100,Sandy Loam,Arenosols,Moderate,60–80
+Cabbage,15–20,50–100,"Loamy, Alluvial","Cambisols, Fluvisols",Moderate,60–80
+Cauliflower,15–20,50–100,"Loamy, Alluvial","Cambisols, Fluvisols",Moderate,60–80
+Radish,10–22,50–100,"Light, Well-drained","Luvisols, Cambisols",Moderate,60–70
+Green Peas,10–25,75–100,"Sandy Loam, Alluvial","Cambisols, Fluvisols",Moderate,55–70
+Beans,16–28,60–100,"Sandy Loam, Red","Cambisols, Luvisols",Moderate,60–75
+Cucumber,18–30,60–90,"Sandy Loam, Alluvial","Arenosols, Fluvisols",Moderate,60–70
+Chilli,20–30,60–120,"Red, Alluvial, Sandy","Luvisols, Arenosols",Moderate,60–70
+Turmeric,20–30,150–200,"Sandy, Well-drained","Arenosols, Cambisols",Mod–High,70–80
+Ginger,20–30,150–300,"Rich, Well-drained","Ferralsols, Acrisols",High,70–85
+Cardamom,15–35,150–300,"Forest Loam, Humus-rich","Acrisols, Ferralsols",Mod–High,75–90
+Black Pepper,20–30,125–200,"Laterite, Humus-rich","Ferralsols, Acrisols",High,75–90
+Coriander,20–25,50–75,"Loamy, Red, Sandy","Luvisols, Arenosols",Moderate,50–70
+Cumin,20–30,30–50,"Sandy Loam, Red","Arenosols, Luvisols",Low–Mod,40–60
+Fennel,20–25,50–75,"Sandy Loam, Red","Arenosols, Luvisols",Moderate,50–65
+Fenugreek,10–25,30–60,"Well-drained, Red","Luvisols, Cambisols",Low–Mod,45–65
+Ajwain,15–30,40–80,"Sandy, Red","Arenosols, Luvisols",Moderate,50–70
+Dill,16–23,60–100,"Sandy Loam, Red","Arenosols, Luvisols",Moderate,45–65
+Saffron,12–16,30–40,"Well-drained, Loamy","Luvisols, Cambisols",Low,50–65
+Tamarind,25–30,75–250,"Deep Loam, Laterite","Cambisols, Ferralsols",Moderate,65–75
+Lotus Root,20–25,50–100,"Clay (Wetland/Pond)",Gleysols,High,80–90
+Elephant Yam,25–30,100–150,"Sandy Loam, Red","Arenosols, Luvisols",High,75–85
