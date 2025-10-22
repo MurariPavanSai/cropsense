@@ -7,3 +7,4 @@ requests_cache
 openmeteo_requests
 strands-agents
 Flask
+scikit-learn
