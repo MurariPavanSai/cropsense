@@ -1,0 +1,8 @@
+streamlit
+pandas
+numpy
+requests
+retry_requests
+requests_cache
+openmeteo_requests
+strands
