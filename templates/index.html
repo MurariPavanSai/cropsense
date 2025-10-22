@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CropSense - Smart Agricultural Analysis</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+ 
+        :root {
+            /* Modern Agricultural Color Palette 2025 */
+            --primary-green: #2D5F3F;
+            --secondary-green: #4A7C59;
+            --accent-gold: #D4A574;
+            --light-sage: #E8F3E8;
+            --cream: #F9F7F4;
+            --earth-brown: #6B5D4F;
+            --soft-green: #8FBC8F;
+            --deep-forest: #1B4332;
+        }
+ 
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(135deg, var(--cream) 0%, var(--light-sage) 100%);
+        }
+ 
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+ 
+        ::-webkit-scrollbar-track {
+            background: var(--light-sage);
+        }
+ 
+        ::-webkit-scrollbar-thumb {
+            background: var(--secondary-green);
+            border-radius: 5px;
+        }
+ 
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-green);
+        }
+ 
+        /* Animation for results */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+ 
+        .result-card {
+            animation: fadeInUp 0.4s ease-out forwards;
+        }
+ 
+        /* Soil type badges */
+        .soil-badge {
+            background: linear-gradient(135deg, var(--accent-gold) 0%, #E8C68F 100%);
+            color: var(--earth-brown);
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+            box-shadow: 0 2px 8px rgba(212, 165, 116, 0.3);
+        }
+ 
+        /* Crop recommendation cards */
+        .crop-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid;
+            background: white;
+        }
+ 
+        .crop-card:hover {
+            transform: translateX(4px);
+            box-shadow: 0 8px 20px rgba(45, 95, 63, 0.15);
+        }
+ 
+        /* Input field enhancements */
+        .input-wrapper {
+            position: relative;
+        }
+ 
+        .input-wrapper input {
+            transition: all 0.3s ease;
+        }
+ 
+        .input-wrapper input:focus {
+            box-shadow: 0 4px 12px rgba(45, 95, 63, 0.2);
+        }
+ 
+        /* Button gradient */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-green) 0%, var(--secondary-green) 100%);
+            transition: all 0.3s ease;
+        }
+ 
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(45, 95, 63, 0.3);
+        }
+ 
+        /* Card styling */
+        .card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+ 
+        .card:hover {
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+ 
+        /* Weather cards */
+        .weather-stat {
+            background: linear-gradient(135deg, var(--light-sage) 0%, #F0F8F0 100%);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: transform 0.2s ease;
+        }
+ 
+        .weather-stat:hover {
+            transform: translateY(-4px);
+        }
+ 
+        /* Insights card special styling */
+        .insights-highlight {
+            position: relative;
+            overflow: hidden;
+        }
+ 
+        .insights-highlight::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--accent-gold), var(--secondary-green));
+            border-radius: inherit;
+            z-index: -1;
+            opacity: 0.1;
+        }
+ 
+        /* Improved loading animation */
+        .spinner {
+            border: 4px solid var(--light-sage);
+            border-top: 4px solid var(--primary-green);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+ 
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <custom-navbar></custom-navbar>
+   
+    <div class="container mx-auto px-4 py-10">
+        <div class="flex flex-col lg:flex-row gap-8">
+            <!-- Left Side - Input Form -->
+            <div class="w-full lg:w-1/3">
+                <div class="card p-8">
+                    <div class="flex items-center mb-8">
+                        <div class="bg-gradient-to-br from-[#2D5F3F] to-[#4A7C59] p-3 rounded-xl mr-3">
+                            <i data-feather="target" class="text-white" stroke-width="2.5"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold" style="color: var(--primary-green)">Crop Analysis</h2>
+                    </div>
+                   
+                    <form id="analyzeForm" class="space-y-6">
+                        <div>
+                            <label for="pinCode" class="block text-sm font-semibold mb-2" style="color: var(--earth-brown)">
+                                Location PIN Code
+                            </label>
+                            <div class="input-wrapper">
+                                <input type="text" id="pinCode" name="pinCode" maxlength="6"
+                                       class="w-full px-4 py-3.5 rounded-xl border-2 focus:outline-none transition"
+                                       style="border-color: var(--soft-green); background: var(--cream)"
+                                       placeholder="Enter 6-digit PIN">
+                                <i data-feather="map-pin" class="absolute right-4 top-4" style="color: var(--secondary-green)"></i>
+                            </div>
+                            <p class="mt-2 text-xs" style="color: var(--secondary-green)">📍 Indian PIN code required</p>
+                        </div>
+                       
+                        <div>
+                            <label for="crop" class="block text-sm font-semibold mb-2" style="color: var(--earth-brown)">
+                                Crop Name
+                            </label>
+                            <div class="input-wrapper">
+                                <input type="text" id="crop" name="crop"
+                                       class="w-full px-4 py-3.5 rounded-xl border-2 focus:outline-none transition"
+                                       style="border-color: var(--soft-green); background: var(--cream)"
+                                       placeholder="e.g., Rice, Wheat, Cotton">
+                                <i data-feather="sprout" class="absolute right-4 top-4" style="color: var(--secondary-green)"></i>
+                            </div>
+                            <p class="mt-2 text-xs" style="color: var(--secondary-green)">🌾 Check crop suitability</p>
+                        </div>
+                       
+                        <button type="submit" class="btn-primary w-full text-white font-semibold py-4 px-6 rounded-xl flex items-center justify-center">
+                            <i data-feather="zap" class="mr-2" stroke-width="2.5"></i>
+                            <span>Analyze Now</span>
+                        </button>
+                    </form>
+                   
+                    <div class="mt-8 pt-8 border-t-2" style="border-color: var(--light-sage)">
+                        <h3 class="text-base font-bold mb-4" style="color: var(--primary-green)">Analysis Process</h3>
+                        <ul class="space-y-3">
+                            <li class="flex items-start">
+                                <div class="bg-gradient-to-br from-[#8FBC8F] to-[#4A7C59] p-1.5 rounded-lg mr-3 mt-0.5">
+                                    <i data-feather="map" class="text-white" style="width: 14px; height: 14px"></i>
+                                </div>
+                                <span class="text-sm" style="color: var(--earth-brown)">Pinpoint your location coordinates</span>
+                            </li>
+                            <li class="flex items-start">
+                                <div class="bg-gradient-to-br from-[#8FBC8F] to-[#4A7C59] p-1.5 rounded-lg mr-3 mt-0.5">
+                                    <i data-feather="cloud-drizzle" class="text-white" style="width: 14px; height: 14px"></i>
+                                </div>
+                                <span class="text-sm" style="color: var(--earth-brown)">Analyze 30-day weather patterns</span>
+                            </li>
+                            <li class="flex items-start">
+                                <div class="bg-gradient-to-br from-[#8FBC8F] to-[#4A7C59] p-1.5 rounded-lg mr-3 mt-0.5">
+                                    <i data-feather="layers" class="text-white" style="width: 14px; height: 14px"></i>
+                                </div>
+                                <span class="text-sm" style="color: var(--earth-brown)">Evaluate soil type & conditions</span>
+                            </li>
+                            <li class="flex items-start">
+                                <div class="bg-gradient-to-br from-[#8FBC8F] to-[#4A7C59] p-1.5 rounded-lg mr-3 mt-0.5">
+                                    <i data-feather="check-circle" class="text-white" style="width: 14px; height: 14px"></i>
+                                </div>
+                                <span class="text-sm" style="color: var(--earth-brown)">Generate crop recommendations</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+           
+            <!-- Right Side - Results -->
+            <div class="w-full lg:w-2/3">
+                <div class="card p-8 h-full">
+                    <div class="flex items-center mb-8">
+                        <div class="bg-gradient-to-br from-[#D4A574] to-[#E8C68F] p-3 rounded-xl mr-3">
+                            <i data-feather="trending-up" class="text-white" stroke-width="2.5"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold" style="color: var(--primary-green)">Analysis Results</h2>
+                    </div>
+                   
+                    <div id="loadingIndicator" class="hidden flex flex-col items-center justify-center py-16">
+                        <div class="spinner mb-4"></div>
+                        <p class="text-lg font-medium" style="color: var(--secondary-green)">Analyzing agricultural data...</p>
+                        <p class="text-sm mt-2" style="color: var(--earth-brown)">This may take a few moments</p>
+                    </div>
+                   
+                    <div id="errorDisplay" class="hidden rounded-xl p-5 mb-6" style="background: #FEE2E2; border: 2px solid #FCA5A5">
+                        <div class="flex items-center" style="color: #991B1B">
+                            <i data-feather="alert-circle" class="mr-3" stroke-width="2.5"></i>
+                            <span id="errorMessage" class="font-medium"></span>
+                        </div>
+                    </div>
+                   
+                    <div id="resultsContainer" class="space-y-6">
+                        <div class="text-center py-20">
+                            <div class="inline-block p-6 rounded-full mb-4" style="background: var(--light-sage)">
+                                <i data-feather="bar-chart-2" class="h-16 w-16" style="color: var(--secondary-green)"></i>
+                            </div>
+                            <p class="text-lg font-medium" style="color: var(--earth-brown)">Ready to analyze your crop potential</p>
+                            <p class="text-sm mt-2" style="color: var(--secondary-green)">Enter PIN code and crop name to begin</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+    <custom-footer></custom-footer>
+   
+    <script>
+        // Custom Navbar Component
+        class CustomNavbar extends HTMLElement {
+            connectedCallback() {
+                this.attachShadow({ mode: 'open' });
+                this.shadowRoot.innerHTML = `
+                    <style>
+                        nav {
+                            background: linear-gradient(135deg, #1B4332 0%, #2D5F3F 100%);
+                            padding: 1.25rem 3rem;
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                            box-shadow: 0 4px 20px rgba(27, 67, 50, 0.3);
+                            position: relative;
+                            z-index: 10;
+                        }
+                        .logo {
+                            color: white;
+                            font-weight: 800;
+                            font-size: 1.4rem;
+                            display: flex;
+                            align-items: center;
+                            letter-spacing: -0.5px;
+                        }
+                        .logo-icon {
+                            margin-right: 0.75rem;
+                            color: #D4A574;
+                            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+                        }
+                        ul {
+                            display: flex;
+                            gap: 2rem;
+                            list-style: none;
+                            margin: 0;
+                            padding: 0;
+                        }
+                        a {
+                            color: #E8F3E8;
+                            text-decoration: none;
+                            font-weight: 500;
+                            font-size: 0.95rem;
+                            transition: all 0.3s;
+                            display: flex;
+                            align-items: center;
+                            padding: 0.5rem 1rem;
+                            border-radius: 8px;
+                        }
+                        a:hover {
+                            color: white;
+                            background: rgba(255, 255, 255, 0.1);
+                            transform: translateY(-2px);
+                        }
+                        .nav-icon {
+                            margin-right: 0.5rem;
+                            width: 18px;
+                            height: 18px;
+                        }
+                        @media (max-width: 768px) {
+                            nav {
+                                flex-direction: column;
+                                padding: 1rem;
+                            }
+                            ul {
+                                margin-top: 1rem;
+                                gap: 0.5rem;
+                                flex-wrap: wrap;
+                                justify-content: center;
+                            }
+                        }
+                    </style>
+                    <nav>
+                        <div class="logo">
+                            <i data-feather="hexagon" class="logo-icon"></i>
+                            CropSense
+                        </div>
+                        <ul>
+                            <li><a href="/"><i data-feather="home" class="nav-icon"></i> Home</a></li>
+                            <li><a href="#"><i data-feather="info" class="nav-icon"></i> About</a></li>
+                            <li><a href="#"><i data-feather="book-open" class="nav-icon"></i> Guide</a></li>
+                            <li><a href="#"><i data-feather="mail" class="nav-icon"></i> Contact</a></li>
+                        </ul>
+                    </nav>
+                `;
+            }
+        }
+        customElements.define('custom-navbar', CustomNavbar);
+ 
+        // Custom Footer Component
+        class CustomFooter extends HTMLElement {
+            connectedCallback() {
+                this.attachShadow({ mode: 'open' });
+                this.shadowRoot.innerHTML = `
+                    <style>
+                        footer {
+                            background: linear-gradient(135deg, #1B4332 0%, #2D5F3F 100%);
+                            color: white;
+                            padding: 3rem 1rem;
+                            text-align: center;
+                            margin-top: auto;
+                        }
+                        .footer-content {
+                            max-width: 1200px;
+                            margin: 0 auto;
+                            display: grid;
+                            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+                            gap: 2.5rem;
+                            text-align: left;
+                        }
+                        .footer-section h3 {
+                            font-size: 1.1rem;
+                            font-weight: 700;
+                            margin-bottom: 1.25rem;
+                            color: #D4A574;
+                            letter-spacing: 0.5px;
+                        }
+                        .footer-links {
+                            list-style: none;
+                            padding: 0;
+                            margin: 0;
+                        }
+                        .footer-links li {
+                            margin-bottom: 0.75rem;
+                        }
+                        .footer-links a {
+                            color: #E8F3E8;
+                            text-decoration: none;
+                            font-size: 0.9rem;
+                            transition: all 0.3s;
+                            display: inline-block;
+                        }
+                        .footer-links a:hover {
+                            color: #D4A574;
+                            transform: translateX(4px);
+                        }
+                        .footer-bottom {
+                            margin-top: 2.5rem;
+                            padding-top: 2rem;
+                            border-top: 1px solid rgba(255, 255, 255, 0.15);
+                            font-size: 0.85rem;
+                            color: #E8F3E8;
+                        }
+                        .social-links {
+                            display: flex;
+                            gap: 1rem;
+                            justify-content: center;
+                            margin-top: 1.25rem;
+                        }
+                        .social-links a {
+                            color: #1B4332;
+                            background: #D4A574;
+                            width: 40px;
+                            height: 40px;
+                            border-radius: 50%;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            transition: all 0.3s;
+                        }
+                        .social-links a:hover {
+                            background: white;
+                            transform: translateY(-4px);
+                            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+                        }
+                        @media (max-width: 768px) {
+                            .footer-content {
+                                grid-template-columns: 1fr;
+                                text-align: center;
+                            }
+                            .footer-links {
+                                display: flex;
+                                flex-direction: column;
+                                align-items: center;
+                            }
+                        }
+                    </style>
+                    <footer>
+                        <div class="footer-content">
+                            <div class="footer-section">
+                                <h3>CropSense</h3>
+                                <ul class="footer-links">
+                                    <li><a href="#">About Us</a></li>
+                                    <li><a href="#">Our Mission</a></li>
+                                    <li><a href="#">Team</a></li>
+                                    <li><a href="#">Careers</a></li>
+                                </ul>
+                            </div>
+                            <div class="footer-section">
+                                <h3>Resources</h3>
+                                <ul class="footer-links">
+                                    <li><a href="#">Crop Guides</a></li>
+                                    <li><a href="#">Weather Data</a></li>
+                                    <li><a href="#">Soil Reports</a></li>
+                                    <li><a href="#">API Docs</a></li>
+                                </ul>
+                            </div>
+                            <div class="footer-section">
+                                <h3>Support</h3>
+                                <ul class="footer-links">
+                                    <li><a href="#">Help Center</a></li>
+                                    <li><a href="#">Contact Us</a></li>
+                                    <li><a href="#">Feedback</a></li>
+                                    <li><a href="#">FAQ</a></li>
+                                </ul>
+                            </div>
+                            <div class="footer-section">
+                                <h3>Connect</h3>
+                                <div class="social-links">
+                                    <a href="#"><i data-feather="facebook"></i></a>
+                                    <a href="#"><i data-feather="twitter"></i></a>
+                                    <a href="#"><i data-feather="instagram"></i></a>
+                                    <a href="#"><i data-feather="linkedin"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="footer-bottom">
+                            <p>&copy; 2025 CropSense. Empowering agriculture through technology.</p>
+                        </div>
+                    </footer>
+                `;
+            }
+        }
+        customElements.define('custom-footer', CustomFooter);
+ 
+        // Form Submission and Results Handling
+        document.addEventListener('DOMContentLoaded', function() {
+            const analyzeForm = document.getElementById('analyzeForm');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const errorDisplay = document.getElementById('errorDisplay');
+            const errorMessage = document.getElementById('errorMessage');
+            const resultsContainer = document.getElementById('resultsContainer');
+           
+            analyzeForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+               
+                const pinCode = document.getElementById('pinCode').value.trim();
+                const crop = document.getElementById('crop').value.trim();
+               
+                // Validate inputs
+                if (!/^\d{6}$/.test(pinCode)) {
+                    showError("Please enter a valid 6-digit PIN code.");
+                    return;
+                }
+               
+                if (!crop) {
+                    showError("Please enter a crop name.");
+                    return;
+                }
+               
+                // Show loading indicator
+                loadingIndicator.classList.remove('hidden');
+                errorDisplay.classList.add('hidden');
+                resultsContainer.innerHTML = '';
+               
+                try {
+                    const response = await fetch('/analyze', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ pinCode, crop })
+                    });
+                   
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => ({}));
+                        throw new Error(errorData.error || `HTTP error: ${response.status}`);
+                    }
+                   
+                    const data = await response.json();
+                    console.log('Analysis Response:', data); // Debug log
+                   
+                    // Normalize Insights field (handle case mismatch)
+                    data.insights = data.Insights || data.insights || 'No specific insights provided for this crop. Please try again or contact support.';
+                   
+                    // Display results
+                    displayAnalysisResults(data);
+                } catch (error) {
+                    console.error('Fetch Error:', error);
+                    showError(`Failed to fetch analysis: ${error.message}. Please check your network or try again later.`);
+                } finally {
+                    loadingIndicator.classList.add('hidden');
+                }
+            });
+           
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorDisplay.classList.remove('hidden');
+                // Scroll to error for better visibility
+                errorDisplay.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+           
+            function displayAnalysisResults(data) {
+                // Clear any previous results
+                resultsContainer.innerHTML = '';
+               
+                // Add insights card to left sidebar (below Analysis Process)
+                if (data.insights) {
+                    // Find or create insights container in left sidebar
+                    const leftSidebar = document.querySelector('.w-full.lg\\:w-1\\/3');
+                    const existingInsights = document.getElementById('insightsCardContainer');
+                   
+                    // Remove existing insights if present
+                    if (existingInsights) {
+                        existingInsights.remove();
+                    }
+                   
+                    // Create new insights container
+                    const insightsContainer = document.createElement('div');
+                    insightsContainer.id = 'insightsCardContainer';
+                    insightsContainer.className = 'mt-6';
+                    insightsContainer.innerHTML = `
+                        <div class="card p-6 insights-highlight bg-gradient-to-br from-white to-[#F9F7F4] border-2" style="border-color: var(--accent-gold); animation: fadeInUp 0.4s ease-out;">
+                            <div class="flex items-center mb-4">
+                                <div class="bg-gradient-to-br from-[#D4A574] to-[#E8C68F] p-2.5 rounded-lg mr-3">
+                                    <i data-feather="lightbulb" class="text-white" stroke-width="2.5"></i>
+                                </div>
+                                <h3 class="text-lg font-bold" style="color: var(--primary-green)">AI Insights</h3>
+                            </div>
+                            <div class="p-4 rounded-xl" style="background: linear-gradient(135deg, var(--light-sage) 0%, #F0F8F0 100%); border-left: 4px solid var(--accent-gold)">
+                                <div class="flex items-start">
+                                    <i data-feather="message-circle" style="color: var(--secondary-green)" class="mr-2 mt-0.5 flex-shrink-0"></i>
+                                    <p class="text-sm leading-relaxed" style="color: var(--earth-brown)">${data.insights}</p>
+                                </div>
+                            </div>
+                            <div class="mt-3 flex items-center text-xs" style="color: var(--secondary-green)">
+                                <i data-feather="cpu" class="mr-1.5" style="width: 12px; height: 12px"></i>
+                                <span>AI-powered analysis</span>
+                            </div>
+                        </div>
+                    `;
+                   
+                    // Append to left sidebar
+                    leftSidebar.appendChild(insightsContainer);
+                   
+                    // Refresh feather icons for the new content
+                    feather.replace();
+                }
+               
+                // Create weather summary card (in right panel)
+                const weatherCard = document.createElement('div');
+                weatherCard.className = 'result-card bg-white rounded-xl border-2 p-6';
+                weatherCard.style.borderColor = 'var(--soft-green)';
+                weatherCard.innerHTML = `
+                    <div class="flex items-center mb-5">
+                        <div class="bg-gradient-to-br from-[#8FBC8F] to-[#4A7C59] p-2.5 rounded-lg mr-3">
+                            <i data-feather="cloud-rain" class="text-white" stroke-width="2.5"></i>
+                        </div>
+                        <h3 class="text-xl font-bold" style="color: var(--primary-green)">Weather Summary</h3>
+                        <span class="ml-auto text-xs font-medium px-3 py-1 rounded-full" style="background: var(--light-sage); color: var(--secondary-green)">30 Days</span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="weather-stat">
+                            <div class="flex items-center mb-2">
+                                <i data-feather="thermometer" style="color: var(--secondary-green)" class="mr-2"></i>
+                                <span class="text-sm font-semibold" style="color: var(--earth-brown)">Temperature</span>
+                            </div>
+                            <p class="text-3xl font-bold" style="color: var(--primary-green)">${data.weather.temperature}</p>
+                        </div>
+                        <div class="weather-stat">
+                            <div class="flex items-center mb-2">
+                                <i data-feather="droplet" style="color: var(--secondary-green)" class="mr-2"></i>
+                                <span class="text-sm font-semibold" style="color: var(--earth-brown)">Precipitation</span>
+                            </div>
+                            <p class="text-3xl font-bold" style="color: var(--primary-green)">${data.weather.precipitation}</p>
+                        </div>
+                        <div class="weather-stat">
+                            <div class="flex items-center mb-2">
+                                <i data-feather="wind" style="color: var(--secondary-green)" class="mr-2"></i>
+                                <span class="text-sm font-semibold" style="color: var(--earth-brown)">Humidity</span>
+                            </div>
+                            <p class="text-3xl font-bold" style="color: var(--primary-green)">${data.weather.humidity}</p>
+                        </div>
+                    </div>
+                `;
+                resultsContainer.appendChild(weatherCard);
+               
+                // Create soil summary card
+                const soilCard = document.createElement('div');
+                soilCard.className = 'result-card bg-white rounded-xl border-2 p-6';
+                soilCard.style.borderColor = 'var(--soft-green)';
+                let soilBadges = '';
+                data.soil.indianTypes.forEach(type => {
+                    soilBadges += `<span class="soil-badge">${type}</span>`;
+                });
+                soilCard.innerHTML = `
+                    <div class="flex items-center mb-5">
+                        <div class="bg-gradient-to-br from-[#D4A574] to-[#E8C68F] p-2.5 rounded-lg mr-3">
+                            <i data-feather="layers" class="text-white" stroke-width="2.5"></i>
+                        </div>
+                        <h3 class="text-xl font-bold" style="color: var(--primary-green)">Soil Analysis</h3>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <p class="text-sm font-semibold mb-3" style="color: var(--earth-brown)">Indian Soil Types</p>
+                            <div class="flex flex-wrap">${soilBadges}</div>
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold mb-3" style="color: var(--earth-brown)">Soil Moisture Level</p>
+                            <div class="flex items-center">
+                                <div class="w-full rounded-full h-3" style="background: var(--light-sage)">
+                                    <div class="h-3 rounded-full" style="width: ${data.soil.moisture === 'High' ? '100%' : data.soil.moisture === 'Medium' ? '60%' : '30%'}; background: linear-gradient(90deg, var(--secondary-green) 0%, var(--primary-green) 100%)"></div>
+                                </div>
+                                <span class="ml-3 text-sm font-bold" style="color: var(--primary-green)">${data.soil.moisture}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                resultsContainer.appendChild(soilCard);
+               
+                // Create crop recommendations card
+                const cropsCard = document.createElement('div');
+                cropsCard.className = 'result-card bg-white rounded-xl border-2 p-6';
+                cropsCard.style.borderColor = 'var(--soft-green)';
+                cropsCard.innerHTML = `
+                    <div class="flex items-center mb-5">
+                        <div class="bg-gradient-to-br from-[#2D5F3F] to-[#4A7C59] p-2.5 rounded-lg mr-3">
+                            <i data-feather="award" class="text-white" stroke-width="2.5"></i>
+                        </div>
+                        <h3 class="text-xl font-bold" style="color: var(--primary-green)">Top Recommendations</h3>
+                        <span class="ml-auto text-xs font-medium px-3 py-1 rounded-full" style="background: var(--light-sage); color: var(--secondary-green)">Top 5</span>
+                    </div>
+                    <div class="space-y-3">
+                        ${data.recommendedCrops.map((crop, index) => `
+                            <div class="crop-card rounded-xl p-5 shadow-sm" style="border-left-color: ${index < 3 ? 'var(--primary-green)' : 'var(--soft-green)'}">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <p class="font-bold text-lg" style="color: var(--primary-green)">${crop.name}</p>
+                                        <p class="text-sm mt-1" style="color: var(--secondary-green)">Suitability: ${crop.score}</p>
+                                    </div>
+                                    <span class="text-xs font-bold px-3 py-2 rounded-full" style="${index < 3 ? 'background: linear-gradient(135deg, var(--primary-green), var(--secondary-green)); color: white' : 'background: var(--light-sage); color: var(--secondary-green)'}">
+                                        ${index === 0 ? '🏆 Best' : `#${index + 1}`}
+                                    </span>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                resultsContainer.appendChild(cropsCard);
+               
+                // Create crop suitability card
+                const suitabilityCard = document.createElement('div');
+                suitabilityCard.className = 'result-card bg-white rounded-xl border-2 p-6';
+                const isSuitable = data.cropSuitability.score > 0.5;
+                suitabilityCard.style.borderColor = isSuitable ? 'var(--primary-green)' : '#FCD34D';
+                suitabilityCard.innerHTML = `
+                    <div class="flex items-center mb-5">
+                        <div class="p-2.5 rounded-lg mr-3" style="background: ${isSuitable ? 'linear-gradient(135deg, var(--primary-green), var(--secondary-green))' : 'linear-gradient(135deg, #FCD34D, #F59E0B)'}">
+                            <i data-feather="${isSuitable ? 'check-circle' : 'alert-triangle'}" class="text-white" stroke-width="2.5"></i>
+                        </div>
+                        <h3 class="text-xl font-bold" style="color: var(--primary-green)">Your Crop: ${data.cropSuitability.cropName}</h3>
+                    </div>
+                    <div class="flex items-center p-5 rounded-xl" style="background: ${isSuitable ? 'var(--light-sage)' : '#FEF3C7'}">
+                        <div class="mr-4">
+                            <i data-feather="${isSuitable ? 'thumbs-up' : 'info'}" class="h-10 w-10" style="color: ${isSuitable ? 'var(--primary-green)' : '#D97706'}"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold text-lg" style="color: ${isSuitable ? 'var(--primary-green)' : '#92400E'}">
+                                ${isSuitable ? '✓ Suitable for Your Location' : '⚠ May Not Be Optimal'}
+                            </p>
+                            <p class="text-sm mt-1" style="color: ${isSuitable ? 'var(--secondary-green)' : '#B45309'}">
+                                Suitability Score: ${data.cropSuitability.score} • Rank: #${data.cropSuitability.rank}
+                            </p>
+                        </div>
+                    </div>
+                    ${!isSuitable && data.cropSuitability.alternatives ? `
+                    <div class="mt-5 p-5 rounded-xl" style="background: var(--light-sage)">
+                        <p class="text-sm font-semibold mb-3" style="color: var(--primary-green)">💡 Better Alternatives:</p>
+                        <ul class="space-y-2">
+                            ${data.cropSuitability.alternatives.slice(0, 3).map(alt => `
+                                <li class="flex items-center">
+                                    <i data-feather="arrow-right" style="color: var(--secondary-green)" class="mr-2 h-4 w-4"></i>
+                                    <span class="text-sm font-medium" style="color: var(--earth-brown)">${alt}</span>
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                    ` : ''}
+                `;
+                resultsContainer.appendChild(suitabilityCard);
+               
+                // Refresh feather icons
+                feather.replace();
+            }
+ 
+ 
+            // Initialize Feather icons
+            if (typeof feather !== 'undefined') {
+                feather.replace();
+            } else {
+                console.warn('Feather Icons not loaded');
+            }
+        });
+    </script>
+</body>
+</html>
+ 
