@@ -21,13 +21,4 @@ It helps farmers, researchers, and policymakers make informed agricultural decis
 
 ---
 
-## 📂 Project Structure
-
-cropsense/
-│
-├── app.py # Main Streamlit app
-├── crop_tools.py # Crop recommendation logic
-├── weather_tools.py # Weather and soil data analysis
-├── crop_data.csv # Dataset containing crop parameters
-└── templates/ # (Optional) UI templates or HTML files
 
